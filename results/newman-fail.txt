@@ -1,0 +1,136 @@
+(node:11228) [DEP0176] DeprecationWarning: fs.F_OK is deprecated, use fs.constants.F_OK instead
+(Use `node --trace-deprecation ...` to show where the warning was created)
+newman
+
+lab05
+
+□ 1. Идэвхтэй оюутан урьдачаа хангасан үед амжилттай бүртгүүлнэ (OK)
+└ setup student
+  PUT http://localhost:3000/students/S1 [200 OK, 178B, 35ms]
+
+└ setup course
+  PUT http://localhost:3000/courses/C1 [200 OK, 178B, 4ms]
+
+└ register
+  POST http://localhost:3000/registrations [201 Created, 202B, 3ms]
+  1. Статус 200
+  √  result нь OK
+  √  registrationID нь тоо
+
+□ 2. Байхгүй оюутан бүртгүүлэхэд ERROR_NO_STUDENT
+└ setup course
+  PUT http://localhost:3000/courses/C2 [200 OK, 178B, 3ms]
+
+└ register
+  POST http://localhost:3000/registrations [200 OK, 192B, 3ms]
+  √  Статус 200
+  √  result нь ERROR_NO_STUDENT
+
+□ 3. Идэвхгүй оюутан бүртгүүлэхэд ERROR_INACTIVE_STUDENT
+└ setup student
+  PUT http://localhost:3000/students/S3 [200 OK, 178B, 3ms]
+
+└ setup course
+  PUT http://localhost:3000/courses/C3 [200 OK, 178B, 3ms]
+
+└ register
+  POST http://localhost:3000/registrations [200 OK, 198B, 3ms]
+  √  Статус 200
+  √  result нь ERROR_INACTIVE_STUDENT
+
+□ 4. Байхгүй хичээлд бүртгүүлэхэд ERROR_NO_COURSE
+└ setup student
+  PUT http://localhost:3000/students/S4 [200 OK, 178B, 4ms]
+
+└ register
+  POST http://localhost:3000/registrations [200 OK, 191B, 4ms]
+  √  Статус 200
+  √  result нь ERROR_NO_COURSE
+
+□ 5. Урьдач нөхцөл огт хангаагүй үед ERROR_PREREQUISITES
+└ setup student
+  PUT http://localhost:3000/students/S5 [200 OK, 178B, 3ms]
+
+└ setup course
+  PUT http://localhost:3000/courses/C5 [200 OK, 178B, 3ms]
+
+└ register
+  POST http://localhost:3000/registrations [200 OK, 215B, 2ms]
+  √  Статус 200
+  √  result нь ERROR_PREREQUISITES
+
+□ 6. Урьдачийн зарим нь л үзсэн үед ERROR_PREREQUISITES
+└ setup student
+  PUT http://localhost:3000/students/S6 [200 OK, 178B, 3ms]
+
+└ setup course
+  PUT http://localhost:3000/courses/C6 [200 OK, 178B, 3ms]
+
+└ register
+  POST http://localhost:3000/registrations [200 OK, 215B, 3ms]
+  √  Статус 200
+  √  result нь ERROR_PREREQUISITES
+
+□ 7. Байхгүй оюутан + байхгүй хичээл үед ERROR_NO_STUDENT
+└ register
+  POST http://localhost:3000/registrations [200 OK, 192B, 2ms]
+  √  Статус 200
+  √  result нь ERROR_NO_STUDENT
+
+□ 8. Идэвхгүй оюутан + байхгүй хичээл үед ERROR_INACTIVE_STUDENT
+└ setup student
+  PUT http://localhost:3000/students/S8 [200 OK, 178B, 2ms]
+
+└ register
+  POST http://localhost:3000/registrations [200 OK, 198B, 3ms]
+  √  Статус 200
+  √  result нь ERROR_INACTIVE_STUDENT
+
+□ 9. Урьдачгүй хичээл, хоосон coursesTaken үед OK
+└ setup student
+  PUT http://localhost:3000/students/S9 [200 OK, 178B, 3ms]
+
+└ setup course
+  PUT http://localhost:3000/courses/C9 [200 OK, 178B, 3ms]
+
+└ register
+  POST http://localhost:3000/registrations [201 Created, 202B, 3ms]
+  √  Статус 201
+  √  result нь OK
+  √  registrationID нь тоо
+
+□ 10. courseID талбар дутуу үед 400 ERROR_BAD_REQUEST
+└ setup student
+  PUT http://localhost:3000/students/S10 [200 OK, 178B, 3ms]
+
+└ register
+  POST http://localhost:3000/registrations [400 Bad Request, 202B, 3ms]
+  √  Статус 400
+  √  result нь ERROR_BAD_REQUEST
+
+┌─────────────────────────┬─────────────────┬─────────────────┐
+│                         │        executed │          failed │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              iterations │               1 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│                requests │              24 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│            test-scripts │              10 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│      prerequest-scripts │               0 │               0 │
+├─────────────────────────┼─────────────────┼─────────────────┤
+│              assertions │              22 │               1 │
+├─────────────────────────┴─────────────────┴─────────────────┤
+│ total run duration: 2.1s                                    │
+├─────────────────────────────────────────────────────────────┤
+│ total data received: 568B (approx)                          │
+├─────────────────────────────────────────────────────────────┤
+│ average response time: 4ms [min: 2ms, max: 35ms, s.d.: 6ms] │
+└─────────────────────────────────────────────────────────────┘
+
+[31m  # [39m[31m failure        [39m[31m detail                                                                                 [39m
+[90m    [39m[90m                [39m[90m                                                                                        [39m
+ 1.  AssertionError  Статус 200                                                                             
+                     expected response to have status code 200 but got 201                                  
+                     at assertion:0 in test-script                                                          
+                     inside "1. Идэвхтэй оюутан урьдачаа хангасан үед амжилттай бүртгүүлнэ (OK) / register" 
